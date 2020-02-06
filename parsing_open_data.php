@@ -10,6 +10,18 @@
 const URL_TRAFFIC_TORINO = "http://opendata.5t.torino.it/get_fdt";
 
 function get_download(){
-    return;
+    $xml = file_get_contents("http://yoursite.com/yourxml.xml");
+}
+
+$xml = simplexml_load_file($_POST[namefile]);
+$tagXML=array();
+if($xml ===  FALSE)
+    echo json_encode($tagXML);
+else{
+    $tagXML[]=(string)$xml->header;
+    $tagXML[]=(string)$xml->body->file;
+    $tagXML[]=(string)$xml->digestHeader;
+    $tagXML[]=(string)$xml->digestFile;
+    echo json_encode($tagXML);
 }
 ?>
