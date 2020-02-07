@@ -13,6 +13,18 @@ dir = MQ.routing.directions()
 
             for (i=0; i < maneuvers.length; i++) {
                 html += (i+1) + '. ';
+                if(maneuvers[i].narrative.includes("left"))
+                    html +='<img src="icon/arrowLeft.png" width="59" height="40">';
+                else if(maneuvers[i].narrative.includes("right"))
+                    html +='<img src="icon/arrowRight.png" width="59" height="40">';
+                else if(maneuvers[i].narrative.includes("straight"))
+                    html +='<img src="icon/straight.png" width="59" height="40">';
+                else if(maneuvers[i].narrative.includes("becomes"))
+                    html +='<img src="icon/crossRoad.png" width="50" height="40">';
+                else if(i==maneuvers.length-1)
+                    html +='<img src="icon/finish.png" width="59" height="40">';
+                else if(i==0)
+                    html +='<img src="icon/start.png" width="50" height="40">';
                 html += maneuvers[i].narrative + '<br>';
             }
 
@@ -27,9 +39,9 @@ dir.route({
     ]
 });
 
+
+
 map.addLayer(MQ.routing.routeLayer({
     directions: dir,
     fitBounds: true
 }));
-
-
