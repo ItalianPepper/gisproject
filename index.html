@@ -5,8 +5,15 @@
     <title>GIS Project</title>
 
     <!-- Leaflet 1.6 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet-src.min.js"></script>
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet-src.min.js"></script>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=sI7mzBZ3MRAd45ISKooZGIg5pCC3U4i3"></script>
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=sI7mzBZ3MRAd45ISKooZGIg5pCC3U4i3"></script>
+
+
 
     <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -15,8 +22,14 @@
 <body>
 
 <div id="map" style="height: 500px; width: 100%"></div>
+<div id="route-narrative"></div>
+
+
 
 <script src="js/main.js"></script>
 <script src="js/xml_parsing.js"></script>
+<script src="js/RoutingJS.js"></script>
+
 </body>
 </html>
+

@@ -27,7 +27,7 @@ function parsing_xml(doc_page_xml){
         var lat = fdt_data_list[i].getAttribute(["lat"]);
         var lng = fdt_data_list[i].getAttribute(["lng"]);
         var accuracy = fdt_data_list[i].getAttribute(["accuracy"]);
-
+        var direction = fdt_data_list[i].getAttribute(["direction"]);
         // Figlio dell'elemento XML che contiene numero di macchine all'ora
         // e la velocità media delle auto.
 
@@ -36,7 +36,7 @@ function parsing_xml(doc_page_xml){
         var speed = speedflow[0].getAttribute(["speed"]);
 
         var resultObj = {"Road_name":roadName, "lat":lat, "lng":lng, "accuracy":accuracy,
-        "flow":flow, "speed":speed};
+        "flow":flow, "speed":speed, "direction":direction};
         list_obj.push(resultObj);
         i++;
     }
@@ -46,12 +46,44 @@ function parsing_xml(doc_page_xml){
 
 function addMarkersOnMap(futureMarkers){
     var i = 0;
-
+    var myIcon;
     while (i < futureMarkers.length){
-        L.marker([futureMarkers[i].lat, futureMarkers[i].lng])
+        if(futureMarkers[i].accuracy==100) {
+            myIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+                iconSize: [38, 95],
+                iconAnchor: [22, 94],
+                popupAnchor: [-3, -76],
+                shadowAnchor: [22, 94]
+            });
+        }
+        else if(futureMarkers[i].accuracy>20 && futureMarkers[i].accuracy<90){
+            myIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+                iconSize: [38, 95],
+                iconAnchor: [22, 94],
+                popupAnchor: [-3, -76],
+                shadowAnchor: [22, 94]
+            });
+        }
+        else{
+            myIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                iconSize: [38, 95],
+                iconAnchor: [22, 94],
+                popupAnchor: [-3, -76],
+                shadowAnchor: [22, 94]
+            });
+        }
+
+
+    /*var negativeIcon = new LeafIcon({iconUrl: './icon/arrowPositive.png'});
+    var negativeIcon = new LeafIcon({iconUrl: './icon/arrowPositive.png'});*/
+
+        L.marker([futureMarkers[i].lat, futureMarkers[i].lng],{icon: myIcon})
             .bindPopup(futureMarkers[i].Road_name +"<br> Auto per ora:"+ futureMarkers[i].flow
-                +"<br>Velocità Media: "+ futureMarkers[i].speed).addTo(map);
+                +"<br>Velocità Media: "+ futureMarkers[i].speed)
+            .addTo(map);
         i++;
     }
-
 }
