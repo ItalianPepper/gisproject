@@ -11,6 +11,7 @@ dir = MQ.routing.directions()
         if (legs && legs.length) {
             maneuvers = legs[0].maneuvers;
 
+
             for (i=0; i < maneuvers.length; i++) {
                 //html += (i+1) + '. ';
                 if(maneuvers[i].narrative.includes("left"))
