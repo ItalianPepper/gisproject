@@ -6,7 +6,9 @@ $.ajax({
     url:"http://opendata.5t.torino.it/get_fdt",
     dataType:"xml",
     success: function(response){
+
         parsing_xml(response)
+
     }
 });
 
@@ -35,12 +37,15 @@ function parsing_xml(doc_page_xml){
         var flow = speedflow[0].getAttribute(["flow"]);
         var speed = speedflow[0].getAttribute(["speed"]);
 
+        //PARSER_EXCEL()
+
         var resultObj = {"Road_name":roadName, "lat":lat, "lng":lng, "accuracy":accuracy,
-        "flow":flow, "speed":speed, "direction":direction};
+        "flow":flow, "speed":speed, "direction":direction}; //"speed":speed
         list_obj.push(resultObj);
         i++;
     }
     addMarkersOnMap(list_obj)
+
 
 }
 
@@ -87,3 +92,6 @@ function addMarkersOnMap(futureMarkers){
         i++;
     }
 }
+
+
+
