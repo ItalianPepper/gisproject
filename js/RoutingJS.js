@@ -20,7 +20,7 @@ dir = MQ.routing.directions()
                     html +='<img src="icon/arrowRight.png" width="59" height="40">&nbsp;&nbsp;';
                 else if(maneuvers[i].narrative.includes("straight"))
                     html +='<img src="icon/straight.png" width="59" height="40">&nbsp;&nbsp;';
-                else if(maneuvers[i].narrative.includes("becomes"))
+                else if(maneuvers[i].narrative.includes("becomes") || maneuvers[i].narrative.includes("Enter"))
                     html +='<img src="icon/crossRoad.png" width="50" height="40">&nbsp;&nbsp;';
                 else if(i==maneuvers.length-1)
                     html +='<img src="icon/finish.png" width="59" height="40">&nbsp;&nbsp;';
