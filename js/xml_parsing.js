@@ -129,7 +129,11 @@ function parserExcel(){
 }
 
 function getSpeedLimitRoad(roadName){
-
+    for (var key in roads) {
+        if(key.includes(roadName))
+            return  roads[roadName];
+        //console.log("key " + key + " has value " + myArray[key]);
+    }
 }
 
 
