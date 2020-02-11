@@ -56,8 +56,9 @@ var dir = MQ.routing.directions().on('success', function(data) {
 
         //Serve per effettuare in seguito chiamate di tipo Route Shape
         sessionId =  data.route.sessionId;
-        indication(data);
+
     }
+    indication(data);
 });
 
 var routeLayer = MQ.routing.routeLayer({
@@ -117,7 +118,7 @@ function indication(data){
         maneuvers = legs[0].maneuvers;
 
         for (i = 0; i < maneuvers.length; i++) {
-            html += (i + 1) + '. ';
+            html += (i + 1) + '. &nbsp;&nbsp;';
             if (maneuvers[i].narrative.includes("left"))
                 html += '<img src="icon/arrowLeft.png" width="59" height="40">';
             else if (maneuvers[i].narrative.includes("right"))
