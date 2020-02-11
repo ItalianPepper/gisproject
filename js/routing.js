@@ -145,9 +145,12 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
                var s_lat = fixedFloatConversion(shapePoints[j].lat);
                var s_lng = fixedFloatConversion(shapePoints[j].lng);
 
+               //VERIFICARE
                var sub_lat = m_lat - s_lat;
                var sub_lng = m_lng - s_lng;
-               var threshold = 110;
+               var threshold = 55;
+
+               console.log(sub_lat+" "+sub_lng);
 
                if (sub_lat <= threshold && sub_lng <= threshold && sub_lat >=-threshold && sub_lng >=-threshold){
 
@@ -157,13 +160,13 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
 
                    var marker_data = markersData[markId];
                    // da sostituire con il limite di velocità della strada.
-                   var speedLimit = 30.00;
+                   var speedLimit = marker_data.speedLimit;
 
                    // (flusso reale all'ora/ flusso stimato all'ora considerando il limite)/ l'accuratezza
                    if (marker_data.accuracy != -1) {
 
                        var metrics = ((marker_data.flow * marker_data.speed)/(marker_data.flow*speedLimit)) * (marker_data.accuracy/100);
-
+                        //console.log(metrics);
                        if (metrics <= 0.4){
                            markersSet[markId].setIcon(red_arrow);
                        }else if(metrics > 0.4 && metrics <= 0.8){
