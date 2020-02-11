@@ -1,12 +1,18 @@
 /**
  * Created by Paolo on 06/02/2020.
  */
+var _JsonData;
+var roads = [];
+
 $.ajax({
     type:"GET",
     url:"http://opendata.5t.torino.it/get_fdt",
     dataType:"xml",
     success: function(response){
+        parserExcel();
         parsing_xml(response)
+        //console.log(roads);
+
     }
 });
 
@@ -49,12 +55,15 @@ function parsing_xml(doc_page_xml){
         var flow = speedflow[0].getAttribute(["flow"]);
         var speed = speedflow[0].getAttribute(["speed"]);
 
-        var resultObj = {"marker_Id":markerId, "Road_name":roadName, "lat":lat, "lng":lng, "accuracy":accuracy,
-            "flow":flow, "speed":speed, "direction":direction};
+        var speedLimit=getSpeedLimitRoad(roadName);
+
+        var resultObj = {"Road_name":roadName, "lat":lat, "lng":lng, "accuracy":accuracy,
+        "flow":flow, "speed":speed, "direction":direction, "speedLimit":speedLimit};
         list_obj.push(resultObj);
         i++;
     }
     addMarkersOnMap(list_obj)
+
 
 }
 /**Variabili globali
@@ -90,4 +99,44 @@ function addMarkersOnMap(futureMarkers){
         i++;
     }
 
+}
+
+function parserExcel(){
+
+    fetch('excelFile/SegnaleticheTorino.xlsx').then(function (res) {
+        /* get the data as a Blob */
+        if (!res.ok) throw new Error("fetch failed");
+        return res.arrayBuffer();
+    })
+        .then(function (ab) {
+            /* parse the data when it is received */
+            var data = new Uint8Array(ab);
+            var workbook = XLSX.read(data, {
+                type: "array"
+            });
+
+            var first_sheet_name = workbook.SheetNames[0];
+            /* Get worksheet */
+            var worksheet = workbook.Sheets[first_sheet_name];
+
+            _JsonData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+            /************************ End of conversion ************************/
+
+
+            $.each(_JsonData, function (index, value) {
+                roads[value.name]=value.name;
+        //       console.log(value.name+" speed:"+value.maxspeed);
+            });
+
+        });
+}
+
+function getSpeedLimitRoad(roadName){
+    for (var key in roads) {
+        //if(key.includes(roadName))
+          //  return  roads[roadName];
+        console.log("key " + key + " has value " + roads[key]);
+    }
+    //se il nome della strada ricercata non è incluso nell'array, viene restituita una stima del limite velocità in base alla tipologia di strada
+    return 40;
 }
