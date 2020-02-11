@@ -121,21 +121,18 @@ function parserExcel(){
 
             $.each(_JsonData, function (index, value) {
                 roads[value.name]=value.name;
-               // console.log(value.name+" speed:"+value.maxspeed);
+        //       console.log(value.name+" speed:"+value.maxspeed);
             });
 
         });
-
 }
 
 function getSpeedLimitRoad(roadName){
     for (var key in roads) {
-        if(key.includes(roadName))
-            return  roads[roadName];
-        //console.log("key " + key + " has value " + myArray[key]);
+        //if(key.includes(roadName))
+          //  return  roads[roadName];
+        console.log("key " + key + " has value " + roads[key]);
     }
+    //se il nome della strada ricercata non è incluso nell'array, viene restituita una stima del limite velocità in base alla tipologia di strada
+    return 40;
 }
-
-
-
-
