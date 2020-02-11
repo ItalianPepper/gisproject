@@ -10,11 +10,6 @@ var zoom = 12;
 var map = L.map('map').setView([lat, lon], zoom);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://developer.mapquest.com/documentation/leaflet-plugins/routing/">MapQuest</a>contributors'
+    attribution: ' <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> '+
+    '| <a href="https://developer.mapquest.com/">MapQuest</a> powered'
 }).addTo(map);
-
-/**
-L.marker([lat,lon]).addTo(map)
-    .bindPopup('Città Metropolitana <br> di  Torino.')
-    .openPopup();
- */
