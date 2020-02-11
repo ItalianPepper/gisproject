@@ -81,6 +81,20 @@ routeLayer.on("markerDragEnd",function(e){
 
 });
 
+routeLayer.on("routeRibbonUpdated",function(e){
+
+    dir.routeShape({
+        'sessionId':sessionId,
+        'fullShape':true
+    });
+
+    /** MarkerSet è una variabile globale contente tutti i marker presenti sulla mappa ed è
+     *  cretato nel file 'xml_parsing.js'
+     */
+    checkMarkersOnRoute(markersSet, markersData, shapePoints)
+
+});
+
 map.addLayer(routeLayer);
 
 //Init dei punti sulla mappa fissati a Torino centro
@@ -122,7 +136,6 @@ function indication(data){
         L.DomUtil.get('route-narrative').innerHTML = html;
     }
 }
-
 
 
 function checkMarkersOnRoute(markersSet, markersData, shapePoints){
