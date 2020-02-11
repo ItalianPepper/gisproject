@@ -10,6 +10,16 @@ $.ajax({
     }
 });
 
+var default_arrow = L.icon({
+    iconUrl: './icon/round_navigation_default_blue_18dp.png',
+    iconSize: [30, 30],
+    iconAnchor: [30, 30],
+    popupAnchor: [-3, -30],
+    shadowUrl: './icon/round_navigation_shadow_18dp.png',
+    shadowSize: [30, 30],
+    shadowAnchor: [25, 25]
+});
+
 /**
  * Questa funzione prende in input una pagina XML, ne ricava i dati li transforma in oggetti JSON.
  * Gli oggetti JSON vengono passati ad una funzione per rappresentarli come Marker sulla mappa.*/
@@ -61,14 +71,14 @@ function addMarkersOnMap(futureMarkers){
 
     while (i < futureMarkers.length){
 
-        var marker = L.marker([futureMarkers[i].lat, futureMarkers[i].lng], {opacity:0.5, riseOnHover:true, riseOffest:300})
+        var marker = L.marker([futureMarkers[i].lat, futureMarkers[i].lng], {opacity:0.7, riseOnHover:true, riseOffest:300, icon:default_arrow})
             .bindPopup(futureMarkers[i].Road_name +"<br> Auto per ora:"+ futureMarkers[i].flow
                 +"<br>Velocità Media: "+ futureMarkers[i].speed)
             .on("click", function(e){
 
-                this.setOpacity(7.0);
+                this.setOpacity(1.0);
                 setTimeout(function () {
-                    e.target.setOpacity(0.5);
+                    e.target.setOpacity(0.7);
                 }, 1500);
 
             });

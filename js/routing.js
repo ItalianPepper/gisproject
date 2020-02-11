@@ -4,8 +4,6 @@
 var sessionId = null;
 /** Array contente tutti i punti selezionati dalla mappa*/
 var shapePoints = [];
-/**Array contente tutti i marker_Id dei marker selezionati per la rotta*/
-var routeSelected = [];
 
 var green_arrow = L.icon({
     iconUrl: './icon/round_navigation_green_18dp.png',
@@ -29,6 +27,16 @@ var orange_arrow = L.icon({
 
 var red_arrow = L.icon({
     iconUrl: './icon/round_navigation_red_18dp.png',
+    iconSize: [30, 30],
+    iconAnchor: [30, 30],
+    popupAnchor: [-3, -30],
+    shadowUrl: './icon/round_navigation_shadow_18dp.png',
+    shadowSize: [30, 30],
+    shadowAnchor: [25, 25]
+});
+
+var error_accuracy_arrow = L.icon({
+    iconUrl: './icon/round_navigation_shadow_18dp.png',
     iconSize: [30, 30],
     iconAnchor: [30, 30],
     popupAnchor: [-3, -30],
@@ -122,7 +130,7 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
      * @param shapePoints Array dei punti presenti nella route
      * Questa funziona colora i marker che sono presenti nella route selezionata dall'utente*/
 
-    var actualRouteSelected = [];
+    var routeSelected = [];
 
     if (shapePoints.length > 0) {
 
@@ -139,13 +147,13 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
 
                var sub_lat = m_lat - s_lat;
                var sub_lng = m_lng - s_lng;
-               var threshold = 100;
+               var threshold = 110;
 
                if (sub_lat <= threshold && sub_lng <= threshold && sub_lat >=-threshold && sub_lng >=-threshold){
 
-                   actualRouteSelected.push(markId);
+                   markersSet[markId].setOpacity(1.0);
 
-                   markersSet[markId].setOpacity(7.0);
+                   routeSelected.push(markId);
 
                    var marker_data = markersData[markId];
                    // da sostituire con il limite di velocità della strada.
@@ -153,6 +161,7 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
 
                    // (flusso reale all'ora/ flusso stimato all'ora considerando il limite)/ l'accuratezza
                    if (marker_data.accuracy != -1) {
+
                        var metrics = ((marker_data.flow * marker_data.speed)/(marker_data.flow*speedLimit)) * (marker_data.accuracy/100);
 
                        if (metrics <= 0.4){
@@ -163,6 +172,8 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
                            markersSet[markId].setIcon(green_arrow);
                        }
 
+                   }else{
+                       markersSet[markId].setIcon(error_accuracy_arrow);
                    }
 
                }
@@ -170,15 +181,13 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
            }
        }
     }
-
-    for (var old in routeSelected){
-        if (!actualRouteSelected.has(old)){
-            markersSet[markId].setIcon(L.Icon.Default);
+    /** Tutti i marker che non sono nella route vengono portati a default.*/
+    for (var markId in markersSet){
+        if (!(routeSelected.includes(markId))){
+            markersSet[markId].setIcon(default_arrow);
         }
     }
 }
-
-
 
 /***JavaScript è limitante con le operazioni sui float*/
 function fixedFloatConversion(numberf){
