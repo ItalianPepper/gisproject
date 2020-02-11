@@ -162,9 +162,9 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
                //VERIFICARE
                var sub_lat = m_lat - s_lat;
                var sub_lng = m_lng - s_lng;
-               var threshold = 55;
+               var threshold = 45;
 
-               console.log(sub_lat+" "+sub_lng);
+              // console.log(sub_lat+" "+sub_lng);
 
                if (sub_lat <= threshold && sub_lng <= threshold && sub_lat >=-threshold && sub_lng >=-threshold){
 
