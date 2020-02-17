@@ -162,7 +162,7 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
                //VERIFICARE
                var sub_lat = m_lat - s_lat;
                var sub_lng = m_lng - s_lng;
-               var threshold = 45;
+               var threshold = 100;
 
               // console.log(sub_lat+" "+sub_lng);
 
@@ -177,15 +177,17 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
                    var speedLimit = marker_data.speedLimit;
 
                    // (flusso reale all'ora/ flusso stimato all'ora considerando il limite)/ l'accuratezza
-                   if (marker_data.accuracy != -1) {
+                   if (marker_data.accuracy != -1 && marker_data.accuracy > 50) {
 
-                       var metrics = ((marker_data.flow * marker_data.speed)/(marker_data.flow*speedLimit)) * (marker_data.accuracy/100);
-                        //console.log(metrics);
-                       if (metrics <= 0.4){
+                       // var metrics = ((marker_data.flow * marker_data.speed)/(marker_data.flow*speedLimit)) * (marker_data.accuracy/100);
+
+                       var metrics = (marker_data.speed)/(speedLimit);
+
+                       if (metrics < 0.49){
                            markersSet[markId].setIcon(red_arrow);
-                       }else if(metrics > 0.4 && metrics <= 0.8){
+                       }else if(metrics >= 0.49 && metrics <= 0.7){
                            markersSet[markId].setIcon(orange_arrow);
-                       }else if(metrics >0.8){
+                       }else if(metrics >0.7){
                            markersSet[markId].setIcon(green_arrow);
                        }
 
