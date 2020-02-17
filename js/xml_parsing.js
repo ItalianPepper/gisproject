@@ -1,20 +1,28 @@
 /**
  * Created by Paolo on 06/02/2020.
  */
-var _JsonData;
-var roads = [];
+
+var roads = {};
 
 $.ajax({
-    type:"GET",
-    url:"http://opendata.5t.torino.it/get_fdt",
-    dataType:"xml",
-    success: function(response){
-        parserExcel();
-        parsing_xml(response)
-        //console.log(roads);
-
+    type: "GET",
+    url: "./local/torino_limits.csv",
+    dataType: "text",
+    success: function (response) {
+        parserCsv(response);
     }
 });
+
+
+$.ajax({
+    type: "GET",
+    url: "http://opendata.5t.torino.it/get_fdt",
+    dataType: "xml",
+    success: function (response) {
+        parsing_xml(response);
+    }
+});
+
 
 var default_arrow = L.icon({
     iconUrl: './icon/round_navigation_default_blue_18dp.png',
@@ -30,7 +38,7 @@ var default_arrow = L.icon({
  * Questa funzione prende in input una pagina XML, ne ricava i dati li transforma in oggetti JSON.
  * Gli oggetti JSON vengono passati ad una funzione per rappresentarli come Marker sulla mappa.*/
 
-function parsing_xml(doc_page_xml){
+function parsing_xml(doc_page_xml) {
     //'FDT_data' è il tag xml della pagina degli Open Data di Torino
 
     var fdt_data_list = doc_page_xml.getElementsByTagName("FDT_data");
@@ -40,9 +48,9 @@ function parsing_xml(doc_page_xml){
 
     var i = 0;
 
-    while(i < fdt_data_list.length){
+    while (i < fdt_data_list.length) {
 
-        var markerId = "marker_"+i;
+        var markerId = "marker_" + i;
         var roadName = fdt_data_list[i].getAttribute(["Road_name"]);
         var lat = fdt_data_list[i].getAttribute(["lat"]);
         var lng = fdt_data_list[i].getAttribute(["lng"]);
@@ -55,10 +63,12 @@ function parsing_xml(doc_page_xml){
         var flow = speedflow[0].getAttribute(["flow"]);
         var speed = speedflow[0].getAttribute(["speed"]);
 
-        var speedLimit=getSpeedLimitRoad(roadName);
+        var speedLimit = getSpeedLimitRoad(roadName);
 
-        var resultObj = {"Road_name":roadName, "lat":lat, "lng":lng, "accuracy":accuracy,
-        "flow":flow, "speed":speed, "direction":direction, "speedLimit":speedLimit};
+        var resultObj = {
+            "Road_name": roadName, "lat": lat, "lng": lng, "accuracy": accuracy,
+            "flow": flow, "speed": speed, "direction": direction, "speedLimit": speedLimit
+        };
         list_obj.push(resultObj);
         i++;
     }
@@ -74,16 +84,21 @@ function parsing_xml(doc_page_xml){
 var markersSet = {};
 var markersData = {};
 
-function addMarkersOnMap(futureMarkers){
+function addMarkersOnMap(futureMarkers) {
 
     var i = 0;
 
-    while (i < futureMarkers.length){
+    while (i < futureMarkers.length) {
 
-        var marker = L.marker([futureMarkers[i].lat, futureMarkers[i].lng], {opacity:0.7, riseOnHover:true, riseOffest:300, icon:default_arrow})
-            .bindPopup(futureMarkers[i].Road_name +"<br> Auto per ora: "+ futureMarkers[i].flow
-                +"<br>Velocità Media: "+ futureMarkers[i].speed+"km/h<br> Limite velocità: "+futureMarkers[i].speedLimit+" km/h")
-            .on("click", function(e){
+        var marker = L.marker([futureMarkers[i].lat, futureMarkers[i].lng], {
+            opacity: 0.7,
+            riseOnHover: true,
+            riseOffest: 300,
+            icon: default_arrow
+        })
+            .bindPopup(futureMarkers[i].Road_name + "<br> Auto per ora: " + futureMarkers[i].flow
+                + "<br>Velocità Media: " + futureMarkers[i].speed + "km/h<br> Limite velocità: " + futureMarkers[i].speedLimit + " km/h")
+            .on("click", function (e) {
 
                 this.setOpacity(1.0);
                 setTimeout(function () {
@@ -92,7 +107,7 @@ function addMarkersOnMap(futureMarkers){
 
             });
 
-        var marker_id = "marker_"+i;
+        var marker_id = "marker_" + i;
         markersSet[marker_id] = marker;
         markersData[marker_id] = futureMarkers[i];
         marker.addTo(map);
@@ -101,42 +116,29 @@ function addMarkersOnMap(futureMarkers){
 
 }
 
-function parserExcel(){
+function parserCsv(response) {
 
-    fetch('excelFile/SegnaleticheTorino.xlsx').then(function (res) {
-        /* get the data as a Blob */
-        if (!res.ok) throw new Error("fetch failed");
-        return res.arrayBuffer();
-    })
-        .then(function (ab) {
-            /* parse the data when it is received */
-            var data = new Uint8Array(ab);
-            var workbook = XLSX.read(data, {
-                type: "array"
-            });
+    var res_array = String(response).split(/\r?\n|\r/);
 
-            var first_sheet_name = workbook.SheetNames[0];
-            /* Get worksheet */
-            var worksheet = workbook.Sheets[first_sheet_name];
+    var header = res_array[0];
 
-            _JsonData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
-            /************************ End of conversion ************************/
+    for (var i=1; i < res_array.length; i++){
+        var splitted = res_array[i].split(";");
+        roads[splitted[0]] = splitted[1];
+    }
 
-
-            $.each(_JsonData, function (index, value) {
-                roads[value.name]=value.name;
-        //       console.log(value.name+" speed:"+value.maxspeed);
-            });
-
-        });
 }
 
-function getSpeedLimitRoad(roadName){
-    for (var key in roads) {
-        //if(key.includes(roadName))
-          //  return  roads[roadName];
-        console.log("key " + key + " has value " + roads[key]);
+function getSpeedLimitRoad(roadName) {
+
+    if (roadName in roads) {
+        //console.log("key " + roadName + " has value " + roads[roadName]);
+        return roads[roadName];
     }
-    //se il nome della strada ricercata non è incluso nell'array, viene restituita una stima del limite velocità in base alla tipologia di strada
+
+    //console.log("key " + key + " has value " + roads[key]);
+    //se il nome della strada ricercata non è incluso nell'array, viene restituita una stima del limite velocità
+    // in base alla tipologia di strada
+
     return 40;
 }
