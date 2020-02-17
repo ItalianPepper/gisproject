@@ -56,8 +56,9 @@ var dir = MQ.routing.directions().on('success', function(data) {
 
         //Serve per effettuare in seguito chiamate di tipo Route Shape
         sessionId =  data.route.sessionId;
-        indication(data);
+
     }
+    indication(data);
 });
 
 var routeLayer = MQ.routing.routeLayer({
@@ -68,6 +69,20 @@ var routeLayer = MQ.routing.routeLayer({
 /**Listener per il rilascio del Marker di MapQuest, fa inoltre partire l'analisi di lat e lng della route*/
 
 routeLayer.on("markerDragEnd",function(e){
+
+    dir.routeShape({
+        'sessionId':sessionId,
+        'fullShape':true
+    });
+
+    /** MarkerSet è una variabile globale contente tutti i marker presenti sulla mappa ed è
+     *  cretato nel file 'xml_parsing.js'
+     */
+    checkMarkersOnRoute(markersSet, markersData, shapePoints)
+
+});
+
+routeLayer.on("routeRibbonUpdated",function(e){
 
     dir.routeShape({
         'sessionId':sessionId,
@@ -103,7 +118,7 @@ function indication(data){
         maneuvers = legs[0].maneuvers;
 
         for (i = 0; i < maneuvers.length; i++) {
-            html += (i + 1) + '. ';
+            html += (i + 1) + '. &nbsp;&nbsp;';
             if (maneuvers[i].narrative.includes("left"))
                 html += '<img src="icon/arrowLeft.png" width="59" height="40">';
             else if (maneuvers[i].narrative.includes("right"))
@@ -122,7 +137,6 @@ function indication(data){
         L.DomUtil.get('route-narrative').innerHTML = html;
     }
 }
-
 
 
 function checkMarkersOnRoute(markersSet, markersData, shapePoints){
@@ -145,9 +159,12 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
                var s_lat = fixedFloatConversion(shapePoints[j].lat);
                var s_lng = fixedFloatConversion(shapePoints[j].lng);
 
+               //VERIFICARE
                var sub_lat = m_lat - s_lat;
                var sub_lng = m_lng - s_lng;
-               var threshold = 110;
+               var threshold = 45;
+
+              // console.log(sub_lat+" "+sub_lng);
 
                if (sub_lat <= threshold && sub_lng <= threshold && sub_lat >=-threshold && sub_lng >=-threshold){
 
@@ -157,13 +174,13 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
 
                    var marker_data = markersData[markId];
                    // da sostituire con il limite di velocità della strada.
-                   var speedLimit = 30.00;
+                   var speedLimit = marker_data.speedLimit;
 
                    // (flusso reale all'ora/ flusso stimato all'ora considerando il limite)/ l'accuratezza
                    if (marker_data.accuracy != -1) {
 
                        var metrics = ((marker_data.flow * marker_data.speed)/(marker_data.flow*speedLimit)) * (marker_data.accuracy/100);
-
+                        //console.log(metrics);
                        if (metrics <= 0.4){
                            markersSet[markId].setIcon(red_arrow);
                        }else if(metrics > 0.4 && metrics <= 0.8){
