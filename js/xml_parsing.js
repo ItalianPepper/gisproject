@@ -81,8 +81,8 @@ function addMarkersOnMap(futureMarkers){
     while (i < futureMarkers.length){
 
         var marker = L.marker([futureMarkers[i].lat, futureMarkers[i].lng], {opacity:0.7, riseOnHover:true, riseOffest:300, icon:default_arrow})
-            .bindPopup(futureMarkers[i].Road_name +"<br> Auto per ora:"+ futureMarkers[i].flow
-                +"<br>Velocità Media: "+ futureMarkers[i].speed)
+            .bindPopup(futureMarkers[i].Road_name +"<br> Auto per ora: "+ futureMarkers[i].flow
+                +"<br>Velocità Media: "+ futureMarkers[i].speed+"km/h<br> Limite velocità: "+futureMarkers[i].speedLimit+" km/h")
             .on("click", function(e){
 
                 this.setOpacity(1.0);
