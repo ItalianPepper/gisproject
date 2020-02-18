@@ -7,38 +7,26 @@ primary;Corso Cosenza(TO);asphalt;50
 residential;Corso Giambone(TO);asphalt;50
 primary;Corso Giambone(TO);asphalt;50
 secondary;Corso Turati(TO);asphalt;50
-residential;Corso Francia(TO);asphalt;50
 primary;Corso Francia(TO);asphalt;50
 residential;Corso Galileo Ferraris(TO);asphalt;50
-secondary;Corso Galileo Ferraris(TO);asphalt;50
 secondary;Corso Sommeiller(TO);asphalt;50
 residential;Corso Agnelli(TO);asphalt;50
-secondary;Corso Agnelli(TO);asphalt;50
 primary;Corso Agnelli(TO);asphalt;50
 residential;Corso Giulio Cesare(TO);asphalt;30
 primary;Corso Lecce(TO);asphalt;50
 residential;Corso Einaudi(TO);asphalt;50
-secondary;Corso Einaudi(TO);asphalt;50
 primary;Corso Massimo D'azeglio(TO);asphalt;50
 residential;Corso Novara(TO);asphalt;50
 residential;Corso Orbassano(TO);asphalt;50
-secondary;Corso Orbassano(TO);asphalt;50
 primary;Corso Orbassano(TO);asphalt;50
 residential;Corso Peschiera(TO);asphalt;50
-secondary;Corso Peschiera(TO);asphalt;50
 secondary;Corso Maroncelli(TO);asphalt;50
-residential;Corso Potenza(TO);asphalt;30
 primary;Corso Potenza(TO);asphalt;50
-residential;Corso IV Novembre(TO);asphalt;50
 secondary;Corso IV Novembre(TO);asphalt;30
-residential;Corso Regina Margherita(TO);asphalt;50
 primary;Corso Regina Margherita(TO);asphalt;70
 secondary;Corso San Maurizio(TO);asphalt;50
-residential;Corso Sebastopoli(TO);asphalt;50
 secondary;Corso Sebastopoli(TO);asphalt;50
 residential;Corso Siracusa(TO);asphalt;50
-primary;Corso Siracusa(TO);asphalt;50
-residential;Corso Trapani(TO);asphalt;30
 primary;Corso Trapani(TO);asphalt;50
 primary;Corso Trieste(TO);asphalt;50
 secondary;Corso Unione Sovietica(TO);asphalt;50
@@ -46,9 +34,7 @@ primary;Corso Unione Sovietica(TO);asphalt;50
 primary;Corso Unita' D'italia(TO);asphalt;50
 secondary;Corso Vercelli(TO);asphalt;50
 secondary;Corso Vinzaglio(TO);asphalt;50
-residential;Corso Vittorio Emanuele II(TO);asphalt;50
 primary;Corso Vittorio Emanuele II(TO);asphalt;50
 primary;Ponte Umberto I(TO);paving_stones;50
 secondary;Via Vigliani(TO);asphalt;50
-residential;Via Santa Maria Mazzarello(TO);asphalt;30
 secondary;Via Santa Maria Mazzarello(TO);asphalt;50
