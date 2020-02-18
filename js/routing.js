@@ -179,15 +179,13 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
                    // (flusso reale all'ora/ flusso stimato all'ora considerando il limite)/ l'accuratezza
                    if (marker_data.accuracy != -1 && marker_data.accuracy > 50) {
 
-                       // var metrics = ((marker_data.flow * marker_data.speed)/(marker_data.flow*speedLimit)) * (marker_data.accuracy/100);
+                       var metrics = speedLimit-marker_data.speed;
 
-                       var metrics = (marker_data.speed)/(speedLimit);
-
-                       if (metrics < 0.49){
+                       if (metrics > 25){
                            markersSet[markId].setIcon(red_arrow);
-                       }else if(metrics >= 0.49 && metrics <= 0.7){
+                       }else if(metrics > 10 && metrics <= 25){
                            markersSet[markId].setIcon(orange_arrow);
-                       }else if(metrics >0.7){
+                       }else if(metrics <=10){
                            markersSet[markId].setIcon(green_arrow);
                        }
 

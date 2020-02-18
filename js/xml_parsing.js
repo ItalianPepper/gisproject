@@ -1,8 +1,17 @@
 /**
  * Created by Paolo on 06/02/2020.
  */
+/**Variabili globali
+ * markersSet sono gli oggetti di Leaflet di tipo Maker presenti sulla mappa
+ * markersData contiene gli oggetti JSON*
+ * roads contiene tutte le strade di Torino  e i relativi limiti di velocità
+ * traffic_lights contiene le coordinate dei semafori di Torino
+ * Entrambi presentano la stessa chiave, preservazione dell'integrità dei dati.*/
 
+var markersSet = {};
+var markersData = {};
 var roads = {};
+var traffic_lights = {};
 
 $.ajax({
     type: "GET",
@@ -10,6 +19,15 @@ $.ajax({
     dataType: "text",
     success: function (response) {
         parserCsv(response);
+    }
+});
+
+$.ajax({
+    type: "GET",
+    url: "./local/traffic_lights_turin",
+    dataType: "json",
+    success: function (response) {
+        add_traffic_lights(response);
     }
 });
 
@@ -32,6 +50,14 @@ var default_arrow = L.icon({
     shadowUrl: './icon/round_navigation_shadow_18dp.png',
     shadowSize: [30, 30],
     shadowAnchor: [25, 25]
+});
+
+
+var traffic_light = L.icon({
+    iconUrl: 'icon/baseline_traffic_black_18dp.png',
+    iconSize: [15, 15],
+    iconAnchor: [15, 15],
+    popupAnchor: [-3, -15],
 });
 
 /**
@@ -76,13 +102,7 @@ function parsing_xml(doc_page_xml) {
 
 
 }
-/**Variabili globali
- * markersSet sono gli oggetti di Leaflet di tipo Maker presenti sulla mappa
- * markersData contiene gli oggetti JSON*
- * Entrambi presentano la stessa chiave, preservazione dell'integrità dei dati.*/
 
-var markersSet = {};
-var markersData = {};
 
 function addMarkersOnMap(futureMarkers) {
 
@@ -122,7 +142,7 @@ function parserCsv(response) {
 
     var header = res_array[0];
 
-    for (var i=1; i < res_array.length; i++){
+    for (var i = 1; i < res_array.length; i++) {
         var splitted = res_array[i].split(";");
         roads[splitted[0]] = splitted[1];
     }
@@ -139,6 +159,32 @@ function getSpeedLimitRoad(roadName) {
     //console.log("key " + key + " has value " + roads[key]);
     //se il nome della strada ricercata non è incluso nell'array, viene restituita una stima del limite velocità
     // in base alla tipologia di strada
-
     return 40;
+}
+
+function add_traffic_lights(response) {
+    var data = response.elements;
+    var i = 0;
+
+    while (i < data.length) {
+
+        if (data[i].lat != null && data[i].lon != null) {
+            /**
+            var marker = L.marker([data[i].lat, data[i].lon], {
+                opacity: 0.5,
+                riseOnHover: true,
+                riseOffest: 300,
+                icon: traffic_light
+            });
+
+            marker.addTo(map);
+            **/
+            var marker_id = "tr_lights_" + i;
+
+            traffic_lights[marker_id] = {"lat": data[i].lat, "lng": data[i].lon};
+        }
+
+        i++;
+    }
+
 }
