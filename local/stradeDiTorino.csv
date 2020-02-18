@@ -3,20 +3,16 @@ secondary;Corso Belgio(TO);asphalt;50
 secondary;Corso Rosselli(TO);asphalt;50
 residential;Corso Corsica(TO);asphalt;50
 residential;Corso Cosenza(TO);asphalt;30
-residential;Corso Cosenza(TO);asphalt;30
 primary;Corso Cosenza(TO);asphalt;50
 residential;Corso Giambone(TO);asphalt;50
 primary;Corso Giambone(TO);asphalt;50
 secondary;Corso Turati(TO);asphalt;50
-residential;Corso Francia(TO);paved;30
 residential;Corso Francia(TO);asphalt;50
 primary;Corso Francia(TO);asphalt;50
 primary;Corso Francia(TO);asphalt;50
-residential;Corso Galileo Ferraris(TO);asphalt;30
 residential;Corso Galileo Ferraris(TO);asphalt;50
 secondary;Corso Galileo Ferraris(TO);asphalt;50
 secondary;Corso Sommeiller(TO);asphalt;50
-residential;Corso Agnelli(TO);asphalt;30
 residential;Corso Agnelli(TO);asphalt;50
 secondary;Corso Agnelli(TO);asphalt;50
 primary;Corso Agnelli(TO);asphalt;50
@@ -35,25 +31,19 @@ secondary;Corso Maroncelli(TO);asphalt;50
 residential;Corso Potenza(TO);asphalt;30
 primary;Corso Potenza(TO);asphalt;50
 residential;Corso IV Novembre(TO);asphalt;50
-residential;Corso IV Novembre(TO);asphalt;40
 secondary;Corso IV Novembre(TO);asphalt;30
 residential;Corso Regina Margherita(TO);asphalt;50
 primary;Corso Regina Margherita(TO);asphalt;70
-primary;Corso Regina Margherita(TO);asphalt;50
 secondary;Corso San Maurizio(TO);asphalt;50
 residential;Corso Sebastopoli(TO);asphalt;50
-residential;Corso Sebastopoli(TO);asphalt;20
 secondary;Corso Sebastopoli(TO);asphalt;50
 residential;Corso Siracusa(TO);asphalt;50
-residential;Corso Siracusa(TO);asphalt;30
 primary;Corso Siracusa(TO);asphalt;50
-residential;Corso Trapani(TO);asphalt;50
 residential;Corso Trapani(TO);asphalt;30
 primary;Corso Trapani(TO);asphalt;50
 primary;Corso Trieste(TO);asphalt;50
 secondary;Corso Unione Sovietica(TO);asphalt;50
 primary;Corso Unione Sovietica(TO);asphalt;50
-primary;Corso Unita' D'italia(TO);asphalt;30
 primary;Corso Unita' D'italia(TO);asphalt;50
 secondary;Corso Vercelli(TO);asphalt;50
 secondary;Corso Vinzaglio(TO);asphalt;50
