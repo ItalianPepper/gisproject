@@ -90,6 +90,7 @@ function parsing_xml(doc_page_xml) {
         var speed = speedflow[0].getAttribute(["speed"]);
 
         var splitInfo = getSpeedLimitRoad(roadName);
+        //console.log(splitInfo)
         var speedLimit = splitInfo.split(":")[1];
         var type_street = splitInfo.split(":")[0];
 
@@ -154,7 +155,7 @@ function parserCsv(response) {
 function getSpeedLimitRoad(roadName) {
 
     if (roadName in roads) {
-        //console.log("key " + roadName + " has value " + roads[roadName]);
+       // console.log(roads[roadName]);
         return roads[roadName];
     }
 
