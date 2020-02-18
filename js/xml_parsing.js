@@ -15,7 +15,7 @@ var traffic_lights = {};
 
 $.ajax({
     type: "GET",
-    url: "./local/torino_limits.csv",
+    url: "./local/stradeDiTorino.csv",
     dataType: "text",
     success: function (response) {
         parserCsv(response);
@@ -89,18 +89,19 @@ function parsing_xml(doc_page_xml) {
         var flow = speedflow[0].getAttribute(["flow"]);
         var speed = speedflow[0].getAttribute(["speed"]);
 
-        var speedLimit = getSpeedLimitRoad(roadName);
+        var splitInfo = getSpeedLimitRoad(roadName);
+        //console.log(splitInfo)
+        var speedLimit = splitInfo.split(":")[1];
+        var type_street = splitInfo.split(":")[0];
 
         var resultObj = {
             "Road_name": roadName, "lat": lat, "lng": lng, "accuracy": accuracy,
-            "flow": flow, "speed": speed, "direction": direction, "speedLimit": speedLimit
+            "flow": flow, "speed": speed, "direction": direction, "speedLimit": speedLimit, "type_street":type_street
         };
         list_obj.push(resultObj);
         i++;
     }
     addMarkersOnMap(list_obj)
-
-
 }
 
 
@@ -144,7 +145,7 @@ function parserCsv(response) {
 
     for (var i = 1; i < res_array.length; i++) {
         var splitted = res_array[i].split(";");
-        roads[splitted[0]] = splitted[1];
+        roads[splitted[1]] = splitted[0]+":"+splitted[3];
     }
 
 }
@@ -152,14 +153,14 @@ function parserCsv(response) {
 function getSpeedLimitRoad(roadName) {
 
     if (roadName in roads) {
-        //console.log("key " + roadName + " has value " + roads[roadName]);
+       // console.log(roads[roadName]);
         return roads[roadName];
     }
 
     //console.log("key " + key + " has value " + roads[key]);
     //se il nome della strada ricercata non è incluso nell'array, viene restituita una stima del limite velocità
     // in base alla tipologia di strada
-    return 40;
+    return "secondary:50";
 }
 
 function add_traffic_lights(response) {
