@@ -102,8 +102,6 @@ function parsing_xml(doc_page_xml) {
         i++;
     }
     addMarkersOnMap(list_obj)
-
-
 }
 
 
@@ -162,7 +160,7 @@ function getSpeedLimitRoad(roadName) {
     //console.log("key " + key + " has value " + roads[key]);
     //se il nome della strada ricercata non è incluso nell'array, viene restituita una stima del limite velocità
     // in base alla tipologia di strada
-    return 40;
+    return "secondary:50";
 }
 
 function add_traffic_lights(response) {
