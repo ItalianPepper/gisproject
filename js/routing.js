@@ -46,16 +46,16 @@ var error_accuracy_arrow = L.icon({
 });
 
 
-var dir = MQ.routing.directions().on('success', function(data) {
+var dir = MQ.routing.directions().on('success', function (data) {
 
-    if (data.route.shape.shapePoints.length > 1){
+    if (data.route.shape.shapePoints.length > 1) {
         shapePoints = data.route.shape.shapePoints;
     }
 
-    if (data.route.sessionId != undefined && data.route.shape.shapePoints.length < 2){
+    if (data.route.sessionId != undefined && data.route.shape.shapePoints.length < 2) {
 
         //Serve per effettuare in seguito chiamate di tipo Route Shape
-        sessionId =  data.route.sessionId;
+        sessionId = data.route.sessionId;
 
     }
     indication(data);
@@ -68,11 +68,11 @@ var routeLayer = MQ.routing.routeLayer({
 
 /**Listener per il rilascio del Marker di MapQuest, fa inoltre partire l'analisi di lat e lng della route*/
 
-routeLayer.on("markerDragEnd",function(e){
+routeLayer.on("markerDragEnd", function (e) {
 
     dir.routeShape({
-        'sessionId':sessionId,
-        'fullShape':true
+        'sessionId': sessionId,
+        'fullShape': true
     });
 
     /** MarkerSet è una variabile globale contente tutti i marker presenti sulla mappa ed è
@@ -82,11 +82,11 @@ routeLayer.on("markerDragEnd",function(e){
 
 });
 
-routeLayer.on("routeRibbonUpdated",function(e){
+routeLayer.on("routeRibbonUpdated", function (e) {
 
     dir.routeShape({
-        'sessionId':sessionId,
-        'fullShape':true
+        'sessionId': sessionId,
+        'fullShape': true
     });
 
     /** MarkerSet è una variabile globale contente tutti i marker presenti sulla mappa ed è
@@ -107,7 +107,7 @@ dir.route({
 });
 
 
-function indication(data){
+function indication(data) {
 
     var legs = data.route.legs,
         html = '',
@@ -139,7 +139,7 @@ function indication(data){
 }
 
 
-function checkMarkersOnRoute(markersSet, markersData, shapePoints){
+function checkMarkersOnRoute(markersSet, markersData, shapePoints) {
     /**@param markers Array dei Marker presenti sulla mappa
      * @param shapePoints Array dei punti presenti nella route
      * Questa funziona colora i marker che sono presenti nella route selezionata dall'utente*/
@@ -148,67 +148,107 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints){
 
     if (shapePoints.length > 0) {
 
-        for (var markId in markersSet){
+        for (var markId in markersSet) {
 
-           for (var j = 0; j < shapePoints.length; j++) {
+            for (var j = 0; j < shapePoints.length; j++) {
 
-               var markerOnMap = markersSet[markId];
+                var markerOnMap = markersSet[markId];
 
-               var m_lat = fixedFloatConversion(markerOnMap._latlng.lat);
-               var m_lng = fixedFloatConversion(markerOnMap._latlng.lng);
-               var s_lat = fixedFloatConversion(shapePoints[j].lat);
-               var s_lng = fixedFloatConversion(shapePoints[j].lng);
+                var m_lat = fixedFloatConversion(markerOnMap._latlng.lat);
+                var m_lng = fixedFloatConversion(markerOnMap._latlng.lng);
+                var s_lat = fixedFloatConversion(shapePoints[j].lat);
+                var s_lng = fixedFloatConversion(shapePoints[j].lng);
 
-               //VERIFICARE
-               var sub_lat = m_lat - s_lat;
-               var sub_lng = m_lng - s_lng;
-               var threshold = 100;
+                //VERIFICARE
+                var sub_lat = m_lat - s_lat;
+                var sub_lng = m_lng - s_lng;
+                var threshold = 100;
 
-              // console.log(sub_lat+" "+sub_lng);
 
-               if (sub_lat <= threshold && sub_lng <= threshold && sub_lat >=-threshold && sub_lng >=-threshold){
+                // console.log(sub_lat+" "+sub_lng);
 
-                   markersSet[markId].setOpacity(1.0);
+                if (sub_lat <= threshold && sub_lng <= threshold && sub_lat >= -threshold && sub_lng >= -threshold) {
 
-                   routeSelected.push(markId);
+                    markersSet[markId].setOpacity(1.0);
 
-                   var marker_data = markersData[markId];
-                   // da sostituire con il limite di velocità della strada.
-                   var speedLimit = marker_data.speedLimit;
+                    routeSelected.push(markId);
 
-                   // (flusso reale all'ora/ flusso stimato all'ora considerando il limite)/ l'accuratezza
-                   if (marker_data.accuracy != -1 && marker_data.accuracy > 50) {
+                    var marker_data = markersData[markId];
 
-                       var metrics = speedLimit-marker_data.speed;
+                    if (marker_data.accuracy > 50) {
 
-                       if (metrics > 25){
-                           markersSet[markId].setIcon(red_arrow);
-                       }else if(metrics > 10 && metrics <= 25){
-                           markersSet[markId].setIcon(orange_arrow);
-                       }else if(metrics <=10){
-                           markersSet[markId].setIcon(green_arrow);
-                       }
+                        var speedLimit = marker_data.speedLimit;
+                        var typeStreet = marker_data.type_street;
+                        var speedAlongStreet = meansSpeed[marker_data.Road_name];
 
-                   }else{
-                       markersSet[markId].setIcon(error_accuracy_arrow);
-                   }
+                        if (isNaN(speedAlongStreet)) {
 
-               }
+                            //un po' sotto la media del limite
 
-           }
-       }
+                            if (typeStreet === "primary") {
+                                var speedAlongStreet = 40;
+                            } else if (typeStreet === "secondary") {
+                                var speedAlongStreet = 40;
+                            } else if (typeStreet === "residential") {
+                                var speedAlongStreet = 20;
+                            }
+                        }
+
+                        /** diffrenza tra il limite di velocità e la velocità registrata dal marker*/
+                        var diffSpeedLimitMarker = speedLimit - marker_data.speed;
+
+                        /** diffrenza tra il limite di velocità e la velocità media lungo la strada*/
+                        var diffSpeedLimitAlongStreet = speedLimit - speedAlongStreet;
+
+                        /** media armonica**/
+
+                        var armonicMean = 2*((diffSpeedLimitMarker * diffSpeedLimitAlongStreet)/
+                            (diffSpeedLimitMarker + diffSpeedLimitAlongStreet));
+                        var armonicMean = armonicMean.toFixed(2);
+
+                        console.log(armonicMean);
+
+                        if (typeStreet === "primary" || typeStreet === "secondary") {
+                            if (armonicMean > 30) {
+                                markersSet[markId].setIcon(red_arrow);
+
+                            } else if (armonicMean > 15 && armonicMean <= 30) {
+                                markersSet[markId].setIcon(orange_arrow);
+
+                            } else if (armonicMean <= 15) {
+                                markersSet[markId].setIcon(green_arrow);
+                            }
+
+                        } else if (typeStreet === "residential") {
+                            if (armonicMean > 25) {
+                                markersSet[markId].setIcon(red_arrow);
+                            } else if (armonicMean > 10 && armonicMean <= 25) {
+                                markersSet[markId].setIcon(orange_arrow);
+                            } else if (armonicMean <= 10) {
+                                markersSet[markId].setIcon(green_arrow);
+                            }
+                        }
+
+                    } else {
+                        markersSet[markId].setIcon(error_accuracy_arrow);
+                    }
+
+                }
+
+            }
+        }
     }
     /** Tutti i marker che non sono nella route vengono portati a default.*/
-    for (var markId in markersSet){
-        if (!(routeSelected.includes(markId))){
+    for (var markId in markersSet) {
+        if (!(routeSelected.includes(markId))) {
             markersSet[markId].setIcon(default_arrow);
         }
     }
 }
 
 /***JavaScript è limitante con le operazioni sui float*/
-function fixedFloatConversion(numberf){
-    var x = numberf*10000;
+function fixedFloatConversion(numberf) {
+    var x = numberf * 10000;
 
     var res = x - Math.floor(x);
 
@@ -216,4 +256,3 @@ function fixedFloatConversion(numberf){
     return x
 
 }
-

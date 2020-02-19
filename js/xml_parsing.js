@@ -6,12 +6,16 @@
  * markersData contiene gli oggetti JSON*
  * roads contiene tutte le strade di Torino  e i relativi limiti di velocità
  * traffic_lights contiene le coordinate dei semafori di Torino
+ * meansSpeed contiene il valore di media della velocità di una strada (media delle medie)
+ * meansVehicle contiene il valore di media del numero di veicoli lungo la strada (media delle medie)
  * Entrambi presentano la stessa chiave, preservazione dell'integrità dei dati.*/
 
 var markersSet = {};
 var markersData = {};
 var roads = {};
-var traffic_lights = {};
+//var traffic_lights = {};
+var meansSpeed = {};
+var meansVehicle = {};
 
 $.ajax({
     type: "GET",
@@ -22,6 +26,7 @@ $.ajax({
     }
 });
 
+/**
 $.ajax({
     type: "GET",
     url: "./local/traffic_lights_turin",
@@ -30,7 +35,7 @@ $.ajax({
         add_traffic_lights(response);
     }
 });
-
+**/
 
 $.ajax({
     type: "GET",
@@ -101,7 +106,9 @@ function parsing_xml(doc_page_xml) {
         list_obj.push(resultObj);
         i++;
     }
-    addMarkersOnMap(list_obj)
+    addMarkersOnMap(list_obj);
+    getMeansSpeedsOnStreet();
+    //getMeansVehiclesOnStreet();
 }
 
 
@@ -163,6 +170,88 @@ function getSpeedLimitRoad(roadName) {
     return "secondary:50";
 }
 
+
+/**Calcolo la media dei veicoli per ora lungo tutta la strada ( media delle medie)
+function getMeansVehiclesOnStreet() {
+
+    var roads_sum = {};
+    var counter_roads = {};
+
+    for (var markId in markersData) {
+
+        if(markersData[markId].accuracy > 50) {
+            var keyInRoads = markersData[markId].Road_name;
+            var flow = markersData[markId].flow;
+
+            if (keyInRoads in roads_sum) {
+                var old_value_k = roads_sum[keyInRoads];
+                roads_sum[keyInRoads] = old_value_k + flow;
+
+                var old_value = counter_roads[keyInRoads];
+                counter_roads[keyInRoads] = old_value + 1;
+
+
+            } else {
+                roads_sum[keyInRoads] = flow;
+                counter_roads[keyInRoads] = 1;
+            }
+        }
+
+    }
+
+    for (var keyinrs in roads_sum){
+
+        var sum = roads_sum[keyinrs];
+
+        var count = counter_roads[keyinrs];
+
+        meansVehicle[keyinrs] = sum/count;
+    }
+}*/
+
+/**Calcolo la media delle velocità media per ora lungo tutta la strada ( media delle medie) */
+function getMeansSpeedsOnStreet(){
+
+    let old_value;
+    var roads_sum = {};
+    var counter_roads = {};
+
+    for (var markId in markersData) {
+
+        if(markersData[markId].accuracy > 50) {
+
+            var keyInRoads = markersData[markId].Road_name;
+            var speed = parseFloat(markersData[markId].speed).toFixed(2);
+
+            if (keyInRoads in roads_sum) {
+                var old_svalue = parseFloat(roads_sum[keyInRoads]).toFixed(2);
+                var new_value = old_svalue + speed;
+                roads_sum[keyInRoads] = parseFloat(new_value).toFixed(2);
+
+                counter_roads[keyInRoads] = counter_roads[keyInRoads] + 1;
+
+
+            } else {
+                roads_sum[keyInRoads] = parseFloat(speed).toFixed(2);
+                counter_roads[keyInRoads] = 1;
+            }
+        }
+
+    }
+
+    for (var keyinrs in roads_sum){
+
+        var sum = roads_sum[keyinrs];
+
+        var count = counter_roads[keyinrs];
+        var mean = parseFloat(sum).toFixed(2)/parseFloat(count).toFixed(2);
+
+        meansSpeed[keyinrs] = parseFloat(mean).toFixed(2);
+    }
+
+}
+
+/**
 function add_traffic_lights(response) {
     var data = response.elements;
     var i = 0;
@@ -170,7 +259,7 @@ function add_traffic_lights(response) {
     while (i < data.length) {
 
         if (data[i].lat != null && data[i].lon != null) {
-            /**
+
             var marker = L.marker([data[i].lat, data[i].lon], {
                 opacity: 0.5,
                 riseOnHover: true,
@@ -179,7 +268,7 @@ function add_traffic_lights(response) {
             });
 
             marker.addTo(map);
-            **/
+
             var marker_id = "tr_lights_" + i;
 
             traffic_lights[marker_id] = {"lat": data[i].lat, "lng": data[i].lon};
@@ -188,4 +277,4 @@ function add_traffic_lights(response) {
         i++;
     }
 
-}
+}**/
