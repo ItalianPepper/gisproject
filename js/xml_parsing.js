@@ -107,7 +107,7 @@ function parsing_xml(doc_page_xml) {
         i++;
     }
     addMarkersOnMap(list_obj);
-    getMeansSpeedsOnStreet();
+    getArmonicMeansSpeedsOnStreet();
     //getMeansVehiclesOnStreet();
 }
 
@@ -209,10 +209,9 @@ function getMeansVehiclesOnStreet() {
     }
 }*/
 
-/**Calcolo la media delle velocità media per ora lungo tutta la strada ( media delle medie) */
-function getMeansSpeedsOnStreet(){
+/**Calcolo  delle velocità medie armoniche per ora lungo tutta la strada */
+function getArmonicMeansSpeedsOnStreet(){
 
-    let old_value;
     var roads_sum = {};
     var counter_roads = {};
 
@@ -221,18 +220,22 @@ function getMeansSpeedsOnStreet(){
         if(markersData[markId].accuracy > 50) {
 
             var keyInRoads = markersData[markId].Road_name;
-            var speed = parseFloat(markersData[markId].speed).toFixed(2);
+            var speed = parseFloat(markersData[markId].speed);
+            speed = 1/speed;
 
             if (keyInRoads in roads_sum) {
-                var old_svalue = parseFloat(roads_sum[keyInRoads]).toFixed(2);
-                var new_value = old_svalue + speed;
-                roads_sum[keyInRoads] = parseFloat(new_value).toFixed(2);
 
-                counter_roads[keyInRoads] = counter_roads[keyInRoads] + 1;
+                var old_svalue = parseFloat(roads_sum[keyInRoads]);
+
+                var sum_value = old_svalue + speed;
+
+                roads_sum[keyInRoads] = parseFloat(sum_value);
+                counter_roads[keyInRoads] = parseInt(counter_roads[keyInRoads]) + 1;
 
 
             } else {
-                roads_sum[keyInRoads] = parseFloat(speed).toFixed(2);
+
+                roads_sum[keyInRoads] = speed;
                 counter_roads[keyInRoads] = 1;
             }
         }
@@ -241,12 +244,13 @@ function getMeansSpeedsOnStreet(){
 
     for (var keyinrs in roads_sum){
 
-        var sum = roads_sum[keyinrs];
+        var sum = parseFloat(roads_sum[keyinrs]);
+        var count = parseInt(counter_roads[keyinrs]);
+        var armonicMean = count/sum;
 
-        var count = counter_roads[keyinrs];
-        var mean = parseFloat(sum).toFixed(2)/parseFloat(count).toFixed(2);
+        armonicMean = armonicMean.toFixed(2);
 
-        meansSpeed[keyinrs] = parseFloat(mean).toFixed(2);
+        meansSpeed[keyinrs] = parseFloat(armonicMean).toFixed(2);
     }
 
 }

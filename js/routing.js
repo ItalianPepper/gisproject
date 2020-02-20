@@ -164,7 +164,6 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints) {
                 var sub_lng = m_lng - s_lng;
                 var threshold = 100;
 
-
                 // console.log(sub_lat+" "+sub_lng);
 
                 if (sub_lat <= threshold && sub_lng <= threshold && sub_lat >= -threshold && sub_lng >= -threshold) {
@@ -178,57 +177,18 @@ function checkMarkersOnRoute(markersSet, markersData, shapePoints) {
                     if (marker_data.accuracy > 50) {
 
                         var speedLimit = marker_data.speedLimit;
-                        var typeStreet = marker_data.type_street;
                         var speedAlongStreet = meansSpeed[marker_data.Road_name];
 
-                        if (isNaN(speedAlongStreet)) {
+                        /**Media armonica tra la velocità della strada  e la velocità prestabilità dal marker*/
+                        var mean = 2/((1/speedAlongStreet)+(1/marker_data.speed));
 
-                            //un po' sotto la media del limite
-
-                            if (typeStreet === "primary") {
-                                var speedAlongStreet = 40;
-                            } else if (typeStreet === "secondary") {
-                                var speedAlongStreet = 40;
-                            } else if (typeStreet === "residential") {
-                                var speedAlongStreet = 20;
-                            }
+                        if (mean <= speedLimit/3){
+                            markersSet[markId].setIcon(red_arrow);
+                        }else if(mean > speedLimit/3 && mean <= speedLimit/2){
+                            markersSet[markId].setIcon(orange_arrow);
+                        }else if(mean > speedLimit/2){
+                            markersSet[markId].setIcon(green_arrow);
                         }
-
-                        /** diffrenza tra il limite di velocità e la velocità registrata dal marker*/
-                        var diffSpeedLimitMarker = speedLimit - marker_data.speed;
-
-                        /** diffrenza tra il limite di velocità e la velocità media lungo la strada*/
-                        var diffSpeedLimitAlongStreet = speedLimit - speedAlongStreet;
-
-                        /** media armonica**/
-
-                        var armonicMean = 2*((diffSpeedLimitMarker * diffSpeedLimitAlongStreet)/
-                            (diffSpeedLimitMarker + diffSpeedLimitAlongStreet));
-                        var armonicMean = armonicMean.toFixed(2);
-
-                        console.log(armonicMean);
-
-                        if (typeStreet === "primary" || typeStreet === "secondary") {
-                            if (armonicMean > 30) {
-                                markersSet[markId].setIcon(red_arrow);
-
-                            } else if (armonicMean > 15 && armonicMean <= 30) {
-                                markersSet[markId].setIcon(orange_arrow);
-
-                            } else if (armonicMean <= 15) {
-                                markersSet[markId].setIcon(green_arrow);
-                            }
-
-                        } else if (typeStreet === "residential") {
-                            if (armonicMean > 25) {
-                                markersSet[markId].setIcon(red_arrow);
-                            } else if (armonicMean > 10 && armonicMean <= 25) {
-                                markersSet[markId].setIcon(orange_arrow);
-                            } else if (armonicMean <= 10) {
-                                markersSet[markId].setIcon(green_arrow);
-                            }
-                        }
-
                     } else {
                         markersSet[markId].setIcon(error_accuracy_arrow);
                     }
